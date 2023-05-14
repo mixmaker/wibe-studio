@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import MainVideo from "../assets/Walking Girl.mp4";
-import { easeInOut, motion } from "framer-motion";
+import { motion } from "framer-motion";
 
 const VideoContainer = styled.section`
   width: 100%;
@@ -11,6 +11,12 @@ const VideoContainer = styled.section`
     width: 100%;
     height: 100vh;
     object-fit: cover;
+    @media (max-width: 48em) {
+      object-position: center 10%;
+    }
+    @media (max-width: 30em) {
+      object-position: center 50%;
+    }
   }
 `;
 const DarkOverlay = styled.div`
@@ -42,6 +48,10 @@ const Title = styled(motion.div)`
     font-family: "Kaushan Script";
     font-size: ${(props) => props.theme.fontBig};
     text-shadow: 1px 1px 1px ${(props) => props.theme.body};
+
+    @media (max-width: 30em) {
+      font-size: calc(5rem + 8vw);
+    }
   }
   h2 {
     font-family: "Sirin Stencil";
@@ -49,6 +59,11 @@ const Title = styled(motion.div)`
     text-shadow: 1px 1px 1px ${(props) => props.theme.body};
     font-weight: 300;
     text-transform: capitalize;
+
+    @media (max-width: 30em) {
+      font-size: ${(props) => props.theme.fontmd};
+      margin-top: -1.5rem;
+    }
   }
 `;
 
@@ -58,7 +73,7 @@ const container = {
   },
   show: {
     opacity: 1,
-    transition: { delayChildren: 2, staggerChildren: 0.3, ease: easeInOut },
+    transition: { delayChildren: 5, staggerChildren: 0.3, ease: "easeInOut" },
   },
 };
 const item = {
@@ -108,7 +123,12 @@ const CoverVideo = () => {
             e
           </motion.h1>
         </div>
-        <motion.h2 variants={item} data-scroll data-scroll-speed="2" data-scroll-delay="0.04">
+        <motion.h2
+          variants={item}
+          data-scroll
+          data-scroll-speed="2"
+          data-scroll-delay="0.04"
+        >
           Inspire, Create, Believe
         </motion.h2>
       </Title>

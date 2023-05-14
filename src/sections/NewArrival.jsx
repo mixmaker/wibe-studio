@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import styled from "styled-components";
+import gsap from "gsap";
+import ScrollTrigger from "gsap/ScrollTrigger";
 import img1 from "../assets/Images/11.webp";
 import img2 from "../assets/Images/12.webp";
 import img3 from "../assets/Images/13.webp";
@@ -23,10 +25,34 @@ const Overlay = styled.div`
   width: 30vw;
   height: 90vh;
   /* background-color: aliceblue; */
-  box-shadow: 0 0 0 5vw ${(props) => props.theme.text};
+  box-shadow: 0 0 0 4vw ${(props) => props.theme.text};
   border: 3px solid ${(props) => props.theme.body};
   z-index: 11;
+
+  @media (max-width: 70em) {
+  width: 40vw;
+
+    height: 80vh;
+  }
+
+  @media (max-width: 64em) {
+  width: 50vw;
+  box-shadow: 0 0 0 60vw ${(props) => props.theme.text};
+
+    height: 80vh;
+  }
+  @media (max-width: 48em) {
+  width: 60vw;
+
+    height: 80vh;
+  }
+  @media (max-width: 30em) {
+  width: 80vw;
+
+    height: 60vh;
+  }
 `;
+
 const Title = styled.h1`
   font-size: ${(props) => props.theme.fontxxxl};
   font-family: "Kaushan Script";
@@ -37,7 +63,18 @@ const Title = styled.h1`
   top: 1rem;
   left: 5%;
   z-index: 11;
+
+  @media (max-width: 64em) {
+    font-size: ${(props) => props.theme.fontxxl};
+
+
+  }
+  @media (max-width: 48em) {
+    font-size: ${(props) => props.theme.fontxl};
+  
+  }
 `;
+
 const Text = styled.div`
   width: 20%;
   font-size: ${(props) => props.theme.fontlg};
@@ -47,7 +84,13 @@ const Text = styled.div`
   top: 0;
   right: 0;
   z-index: 11;
+
+  @media (max-width: 48em) {
+    display: none;
+  
+  }
 `;
+
 const Container = styled.div`
   position: absolute;
   top: 0;
@@ -60,6 +103,20 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: 64em) {
+  width: 30vw;
+
+
+  }
+  @media (max-width: 48em) {
+  width: 40vw;
+
+  }
+  @media (max-width: 30em) {
+  width: 60vw;
+
+  }
 `;
 
 const Item = styled.div`
@@ -85,8 +142,64 @@ const Product = ({ img, title }) => {
 };
 
 const NewArrival = () => {
+  gsap.registerPlugin(ScrollTrigger);
+  const ref = useRef(null);
+
+  const ScrollingRef = useRef(null);
+
+  useLayoutEffect(() => {
+    let element = ref.current;
+
+    let scrollingElement = ScrollingRef.current;
+
+    let t1 = gsap.timeline();
+
+    setTimeout(() => {
+      t1.to(element, {
+        scrollTrigger: {
+          trigger: element,
+          start: "top top",
+          end: "bottom+=100% top-=100%",
+          scroller: ".App", //locomotive-scroll
+          scrub: 1,
+          pin: true,
+          // markers: true,
+          // anticipatePin: 1,
+        },
+        ease: "none",
+      });
+
+      t1.fromTo(
+        scrollingElement,
+        {
+          y: "0",
+        },
+        {
+          y: "-100%",
+          scrollTrigger: {
+            trigger: scrollingElement,
+            start: "top top",
+            end: "bottom top",
+            scroller: ".App", //locomotive-scroll
+            scrub: 1,
+            // markers: true,
+          },
+
+          ease: "none",
+        }
+      );
+      ScrollTrigger.refresh();
+    }, 1000);
+    ScrollTrigger.refresh();
+
+    return () => {
+      t1.kill();
+      ScrollTrigger.kill();
+    };
+  }, []);
+
   return (
-    <Section>
+    <Section ref={ref} id='new-arrival'>
       <Overlay />
       <Title
         data-scroll
@@ -95,6 +208,12 @@ const NewArrival = () => {
       >
         New Arrivals
       </Title>
+      <Container ref={ScrollingRef}>
+        <Product img={img1} title="Denim" />
+        <Product img={img2} title="Cool Dresses" />
+        <Product img={img3} title="Jackets" />
+        <Product img={img4} title="T-shirts" />
+      </Container>
 
       <Text data-scroll data-scroll-speed="-4">
         There is new collection available for cool clothes in all sizes. This
@@ -109,12 +228,6 @@ const NewArrival = () => {
         <br />
         Give it a try and experience a new look.
       </Text>
-      <Container>
-        <Product img={img1} title="Man Basics" />
-        <Product img={img2} title="Tops" />
-        <Product img={img3} title="Sweatshirts" />
-        <Product img={img4} title="Ethnic Wear" />
-      </Container>
     </Section>
   );
 };
